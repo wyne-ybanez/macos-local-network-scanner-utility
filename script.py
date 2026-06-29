@@ -53,6 +53,7 @@ def get_my_interfaces_and_ips() -> list[tuple[str, str]]:
     Return list of (interface, ipv4) for all interfaces with a routable IPv4 address.
     """
     interfaces_and_ips = []
+    
     for interface in get_interfaces():
         ipv4 = get_my_ipv4(interface)
         if ipv4 and not ipv4.startswith("127."):
@@ -86,6 +87,7 @@ def parse_ndp() -> dict[str, list[str]]:
     """
     output = run(["ndp", "-a"])
     mac_to_ipv6 = {}
+    
     for line in output.splitlines():
         parts = line.split()
         if len(parts) < 2:
@@ -110,6 +112,8 @@ def main():
 
     # Use the first interface and IP (typically the primary one) for scanning
     interface, my_ipv4 = my_interfaces[0]
+
+    # Get Mac address, create device map, get IPv6 IP address
     my_mac_addr = get_my_mac_address(interface)
     devices_map = parse_arp()
     mac_to_ipv6 = parse_ndp()
